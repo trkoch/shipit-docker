@@ -1,0 +1,19 @@
+{
+  "name": "shipit-docker",
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tristan Koch",
+  "license": "ISC",
+  "keywords": ["shipit", "docker"],
+  "description": "Set of Shipit helpers for deployment to Docker containers",
+  "dependencies": {
+    "chalk": "^1.1.3",
+    "lodash": "^4.15.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.5.0"
+  }
+}
