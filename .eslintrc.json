@@ -23,6 +23,7 @@
         "error",
         "never"
     ],
-    "no-console": "warn"
+    "no-console": "warn",
+    "no-debugger": "warn"
   }
 }
