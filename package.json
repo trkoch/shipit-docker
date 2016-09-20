@@ -20,6 +20,8 @@
     "chai": "^3.5.0",
     "eslint": "^3.5.0",
     "mocha": "^3.0.2",
-    "shipit-cli": "^1.4.1"
+    "proxyquire": "^1.7.10",
+    "shipit-cli": "^1.4.1",
+    "sinon": "^1.17.6"
   }
 }
