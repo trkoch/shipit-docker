@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "eslint": "eslint **/*.js"
   },
   "author": "Tristan Koch",
   "license": "ISC",
@@ -19,6 +20,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "eslint": "^3.5.0",
+    "eslint-plugin-mocha": "^4.5.1",
     "mocha": "^3.0.2",
     "proxyquire": "^1.7.10",
     "shipit-cli": "^1.4.1",
