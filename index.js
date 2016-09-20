@@ -1,3 +1,3 @@
-module.exports = function(shipit) {
+module.exports = function() {
   // TODO: Read container definitions from config
 }
