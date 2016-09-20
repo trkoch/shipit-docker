@@ -6,7 +6,7 @@ function mergeTaskOptions(globalOptions, taskOptions) {
   let {prefix, vendor, name, service = 'web'} = options
 
   // Prefix, vendor, name required for dynamically generating image and container name
-  if (!options.image || !options.container || !options.net) {
+  if (!options.image || !options.container) {
     if (!prefix) { throw new Error('Missing prefix') }
     if (!vendor) { throw new Error('Missing vendor') }
     if (!name)   { throw new Error('Missing name')   }
@@ -20,24 +20,19 @@ function mergeTaskOptions(globalOptions, taskOptions) {
   }, options)
 }
 
-module.exports = function(shipit) {
-  class Task {
-    constructor(options = {}) {
-      options = mergeTaskOptions(shipit.config, options)
-      let container = new Container(shipit, options)
-
-      return function() {
-        return Promise.resolve()
-          .then(container.build)
-          .then(container.up)
-      }
-    }
+class Task {
+  constructor(shipit, options = {}) {
+    this.shipit = shipit
+    this.options = mergeTaskOptions(shipit.config || {}, options)
   }
 
-  return Task
+  run() {
+    let container = new Container(this.shipit, this.options)
+
+    return Promise.resolve()
+      .then(container.build)
+      .then(container.up)
+  }
 }
 
-// Testing
-Object.assign(module.exports, {
-  mergeTaskOptions
-})
+module.exports = Task
