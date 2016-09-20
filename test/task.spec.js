@@ -1,5 +1,10 @@
 const {assert} = require('chai')
 const sinon = require('sinon')
+const sinonStubPromise = require('sinon-stub-promise')
+
+sinonStubPromise(sinon)
+sinon.stub(Promise, 'resolve', sinon.stub().returnsPromise().resolves())
+sinon.assert.expose(assert, { prefix: "" })
 
 const Shipit = require('shipit-cli')
 const Task = require('../task')
@@ -82,15 +87,42 @@ describe('Task', function() {
   })
 
   describe('run()', function() {
+    beforeEach(function() {
+      this.Container = sinon.spy(() => this.container)
+
+      this.container = {
+        build: sinon.stub().returnsPromise(),
+        up: sinon.stub().returnsPromise()
+      }
+
+      this.options = {
+        image: 'image',
+        container: 'container',
+        net: true,
+        path: 'path/to/project/'
+      }
+
+      this.shipit = {}
+    })
+
     it('initializes container with options', function() {
-      let Container = sinon.stub()
-      let shipit = {}
-      let options = { image: 'i', container: 'c', net: 'n', path: 'p' }
+      let {Container, shipit, options} = this
 
       let task = new Task(shipit, options)
       task.run(Container)
 
       sinon.assert.calledWith(Container, shipit, options)
     })
+
+    it('builds and starts container', sinon.test(function() {
+      let {Container, container, shipit, options} = this
+
+      let task = new Task(shipit, options)
+      task.run(Container)
+      container.build.resolves()
+      container.up.resolves()
+
+      assert.callOrder(container.build, container.up)
+    }))
   })
 })
