@@ -122,6 +122,8 @@ describe('Task', function() {
       container.build.resolves()
       container.up.resolves()
 
+      container.build.displayName = 'build'
+      container.up.displayName = 'up'
       assert.callOrder(container.build, container.up)
     }))
   })
