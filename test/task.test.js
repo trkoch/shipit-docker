@@ -9,9 +9,9 @@ sinon.assert.expose(assert, { prefix: "" })
 const Shipit = require('shipit-cli')
 const Task = require('../task')
 
-describe('Task', function() {
-  describe('with global prefix, vendor and name', function() {
-    beforeEach(function() {
+suite('Task', function() {
+  suite('with global prefix, vendor and name', function() {
+    setup(function() {
       this.shipit = new Shipit({environment: 'test'})
       this.shipit.initConfig({
         default: {
@@ -25,29 +25,29 @@ describe('Task', function() {
       })
     })
 
-    it('accepts task options', function() {
+    test('accepts task options', function() {
       let task = new Task(this.shipit, {net: true})
       assert.isOk(task.options.net)
     })
 
-    it('merges task and global options', function() {
+    test('merges task and global options', function() {
       let task = new Task(this.shipit, {envs: ['AWESOME=TRUE']})
       assert.equal(task.options.prefix, 'pre')
       assert.equal(task.options.envs[0], 'AWESOME=TRUE')
     })
 
-    it('overrides global options', function() {
+    test('overrides global options', function() {
       let task = new Task(this.shipit, {prefix: 'pfix'})
       assert.equal(task.options.prefix, 'pfix')
     })
 
-    it('derives required names', function() {
+    test('derives required names', function() {
       let task = new Task(this.shipit)
       assert.equal(task.options.image, 'pre/ven_name_web')
       assert.equal(task.options.container, 'ven_name_web')
     })
 
-    it('derives required names from options', function() {
+    test('derives required names from options', function() {
       let task = new Task(this.shipit, {
         prefix: 'pfix',
         vendor: 'vdor',
@@ -57,7 +57,7 @@ describe('Task', function() {
       assert.equal(task.options.container, 'vdor_some_web')
     })
 
-    it('uses required names from options', function() {
+    test('uses required names from options', function() {
       let task = new Task(this.shipit, {
         image: 'pfix/vdor_some_web',
         container: 'vdor_some_web'
@@ -67,15 +67,15 @@ describe('Task', function() {
     })
   })
 
-  describe('without global options', function() {
-    it('requires prefix without image and container', function() {
+  suite('without global options', function() {
+    test('requires prefix without image and container', function() {
       let shipit = new Shipit({environment: 'test'})
       assert.throws(function() {
         new Task(shipit, {}, /Missing prefix/)
       })
     })
 
-    it('does not require prefix with image and container', function() {
+    test('does not require prefix with image and container', function() {
       let shipit = new Shipit({environment: 'test'})
       assert.doesNotThrow(function() {
         new Task(shipit, {
@@ -86,8 +86,8 @@ describe('Task', function() {
     })
   })
 
-  describe('run()', function() {
-    beforeEach(function() {
+  suite('run()', function() {
+    setup(function() {
       this.Container = sinon.spy(() => this.container)
 
       this.container = {
@@ -105,7 +105,7 @@ describe('Task', function() {
       this.shipit = {}
     })
 
-    it('initializes container with options', function() {
+    test('initializes container with options', function() {
       let {Container, shipit, options} = this
 
       let task = new Task(shipit, options)
@@ -114,7 +114,7 @@ describe('Task', function() {
       sinon.assert.calledWith(Container, shipit, options)
     })
 
-    it('builds and starts container', sinon.test(function() {
+    test('builds and starts container', sinon.test(function() {
       let {Container, container, shipit, options} = this
 
       let task = new Task(shipit, options)
