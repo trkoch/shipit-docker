@@ -1,9 +1,13 @@
 {
   "env": {
     "es6": true,
-    "node": true
+    "node": true,
+    "mocha": true
   },
   "extends": "eslint:recommended",
+  "plugins": [
+    "mocha"
+  ],
   "rules": {
     "indent": [
       "error",
@@ -17,7 +21,9 @@
       "error",
       "never"
     ],
-    "no-console": "off",
-    "no-debugger": "warn"
+    "no-console": "warn",
+    "no-debugger": "warn",
+    "mocha/no-exclusive-tests": "warn",
+    "mocha/no-identical-title": "error"
   }
 }
