@@ -1,5 +1,4 @@
 const {assert} = require('chai')
-const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
 const Shipit = require('shipit-cli')
@@ -85,12 +84,11 @@ describe('Task', function() {
   describe('run()', function() {
     it('initializes container with options', function() {
       let Container = sinon.stub()
-      let Task = proxyquire('../task', { './lib/container': Container })
-
       let shipit = {}
       let options = { image: 'i', container: 'c', net: 'n', path: 'p' }
+
       let task = new Task(shipit, options)
-      task.run()
+      task.run(Container)
 
       sinon.assert.calledWith(Container, shipit, options)
     })

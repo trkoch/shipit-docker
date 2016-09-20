@@ -1,4 +1,3 @@
-const Container = require('./lib/container')
 const {merge} = require('lodash')
 
 function mergeTaskOptions(globalOptions, taskOptions) {
@@ -26,7 +25,7 @@ class Task {
     this.options = mergeTaskOptions(shipit.config || {}, options)
   }
 
-  run() {
+  run(Container = require('./lib/container')) {
     let container = new Container(this.shipit, this.options)
 
     return Promise.resolve()
