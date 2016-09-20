@@ -3,13 +3,20 @@ const sinon = require('sinon')
 const sinonStubPromise = require('sinon-stub-promise')
 
 sinonStubPromise(sinon)
-sinon.stub(Promise, 'resolve', sinon.stub().returnsPromise().resolves())
 sinon.assert.expose(assert, { prefix: "" })
 
 const Shipit = require('shipit-cli')
 const Task = require('../task')
 
 suite('Task', function() {
+  suiteSetup(function() {
+    sinon.stub(Promise, 'resolve', sinon.stub().returnsPromise().resolves())
+  })
+
+  suiteTeardown(function() {
+    Promise.resolve.restore()
+  })
+
   suite('with global prefix, vendor and name', function() {
     let shipit
 
