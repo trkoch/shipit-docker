@@ -32,7 +32,13 @@ describe('Task', function() {
         },
         test: {
           docker: {
-            envs: ['ENV=test']
+            detach: false,
+            containers: [
+              {
+                service: 'web',
+                envs: ['WEB=TRUE']
+              }
+            ]
           }
         }
       })
@@ -45,59 +51,17 @@ describe('Task', function() {
 
     it('includes environment options', function() {
       let task = new Task(shipit)
-      assert.equal(task.options.envs[0], 'ENV=test')
+      assert.equal(task.options.detach, false)
+    })
+
+    it('includes container options', function() {
+      let task = new Task(shipit, {service: 'web'})
+      assert.equal(task.options.envs[0], ['WEB=TRUE'])
     })
 
     it('includes task options', function() {
       let task = new Task(shipit, {net: true})
       assert.isTrue(task.options.net)
-    })
-
-    it('gives precedence to environment options', function() {
-      let shipit = new Shipit({environment: 'test'})
-      shipit.initConfig({
-        default: {
-          docker: {
-            name: 'global'
-          }
-        },
-        test: {
-          docker: {
-            name: 'environment'
-          }
-        }
-      })
-
-      let task = new Task(shipit, {
-        prefix: 'pre',
-        vendor: 'ven'
-      })
-
-      assert.equal(task.options.name, 'environment')
-    })
-
-    it('gives precedence to task options', function() {
-      let shipit = new Shipit({environment: 'test'})
-      shipit.initConfig({
-        default: {
-          docker: {
-            name: 'global'
-          }
-        },
-        test: {
-          docker: {
-            name: 'environment'
-          }
-        }
-      })
-
-      let task = new Task(shipit, {
-        prefix: 'pre',
-        vendor: 'ven',
-        name: 'task'
-      })
-
-      assert.equal(task.options.name, 'task')
     })
 
     it('derives required names', function() {
@@ -142,6 +106,70 @@ describe('Task', function() {
           container: 'ven_name_web'
         })
       })
+    })
+  })
+
+  describe('merging options', function() {
+    let config
+
+    beforeEach(function() {
+      config = {
+        default: {
+          docker: {
+            name: 'global',
+            containers: [
+              {
+                service: 'web',
+                name: 'container'
+              }
+            ]
+          }
+        },
+        test: {
+          docker: {
+            name: 'environment'
+          }
+        }
+      }
+    })
+
+    it('gives precedence to environment options', function() {
+      let shipit = new Shipit({environment: 'test'})
+      delete config.default.docker.containers // Container options take precedence
+      shipit.initConfig(config)
+
+      let task = new Task(shipit, {
+        prefix: 'pre',
+        vendor: 'ven'
+      })
+
+      assert.equal(task.options.name, 'environment')
+    })
+
+    it('gives precedence to container options', function() {
+      let shipit = new Shipit({environment: 'test'})
+      shipit.initConfig(config)
+
+      let task = new Task(shipit, {
+        prefix: 'pre',
+        vendor: 'ven',
+        service: 'web'
+      })
+
+      assert.equal(task.options.name, 'container')
+    })
+
+    it('gives precedence to task options', function() {
+      let shipit = new Shipit({environment: 'test'})
+      shipit.initConfig(config)
+
+      let task = new Task(shipit, {
+        prefix: 'pre',
+        vendor: 'ven',
+        name: 'task'
+      })
+
+      assert.equal(task.options.name, 'task')
     })
   })
 
