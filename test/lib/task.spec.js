@@ -30,24 +30,74 @@ describe('Task', function() {
             name: 'name'
           }
         },
-        test: {}
+        test: {
+          docker: {
+            envs: ['ENV=test']
+          }
+        }
       })
     })
 
-    it('accepts task options', function() {
-      let task = new Task(shipit, {net: true})
-      assert.isOk(task.options.net)
-    })
-
-    it('merges task and global options', function() {
-      let task = new Task(shipit, {envs: ['AWESOME=TRUE']})
+    it('includes global options', function() {
+      let task = new Task(shipit)
       assert.equal(task.options.prefix, 'pre')
-      assert.equal(task.options.envs[0], 'AWESOME=TRUE')
     })
 
-    it('overrides global options', function() {
-      let task = new Task(shipit, {prefix: 'pfix'})
-      assert.equal(task.options.prefix, 'pfix')
+    it('includes environment options', function() {
+      let task = new Task(shipit)
+      assert.equal(task.options.envs[0], 'ENV=test')
+    })
+
+    it('includes task options', function() {
+      let task = new Task(shipit, {net: true})
+      assert.isTrue(task.options.net)
+    })
+
+    it('gives precedence to environment options', function() {
+      let shipit = new Shipit({environment: 'test'})
+      shipit.initConfig({
+        default: {
+          docker: {
+            name: 'global'
+          }
+        },
+        test: {
+          docker: {
+            name: 'environment'
+          }
+        }
+      })
+
+      let task = new Task(shipit, {
+        prefix: 'pre',
+        vendor: 'ven'
+      })
+
+      assert.equal(task.options.name, 'environment')
+    })
+
+    it('gives precedence to task options', function() {
+      let shipit = new Shipit({environment: 'test'})
+      shipit.initConfig({
+        default: {
+          docker: {
+            name: 'global'
+          }
+        },
+        test: {
+          docker: {
+            name: 'environment'
+          }
+        }
+      })
+
+      let task = new Task(shipit, {
+        prefix: 'pre',
+        vendor: 'ven',
+        name: 'task'
+      })
+
+      assert.equal(task.options.name, 'task')
     })
 
     it('derives required names', function() {
