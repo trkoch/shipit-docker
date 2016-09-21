@@ -6,7 +6,7 @@ sinonStubPromise(sinon)
 sinon.assert.expose(assert, { prefix: "" })
 
 const Shipit = require('shipit-cli')
-const Task = require('../task')
+const Task = require('../../lib/task')
 
 describe('Task', function() {
   before(function() {

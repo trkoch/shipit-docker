@@ -1,3 +1,1 @@
-module.exports = function() {
-  // TODO: Read container definitions from config
-}
+module.exports = require('./lib/plugin')
