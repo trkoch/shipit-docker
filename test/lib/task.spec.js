@@ -64,6 +64,39 @@ describe('Task', function() {
       assert.isTrue(task.options.net)
     })
 
+    it('merges container default and environment options', function() {
+      let shipit = new Shipit({environment: 'test'})
+      shipit.initConfig({
+        default: {
+          docker: {
+            prefix: 'pre',
+            vendor: 'ven',
+            name: 'name',
+            default: [
+              {
+                service: 'assets',
+                net: false
+              }
+            ]
+          }
+        },
+        test: {
+          docker: {
+            containers: [
+              {
+                service: 'assets',
+                envs: ['API=http://api.example.com']
+              }
+            ]
+          }
+        }
+      })
+
+      let task = new Task(shipit, {service: 'assets'})
+      assert.equal(task.options.net, false)
+      assert.equal(task.options.envs[0], 'API=http://api.example.com')
+    })
+
     it('derives required names', function() {
       let task = new Task(shipit)
       assert.equal(task.options.image, 'pre/ven_name_web')
@@ -170,6 +203,36 @@ describe('Task', function() {
       })
 
       assert.equal(task.options.name, 'task')
+    })
+
+    it('includes options of given service', function() {
+      let shipit = new Shipit({environment: 'test'})
+      shipit.initConfig({
+        test: {
+          docker: {
+            prefix: 'pre',
+            vendor: 'ven',
+            containers: [
+              {
+                service: 'web',
+                name: 'web'
+              },
+              {
+                service: 'assets',
+                name: 'assets'
+              }
+            ]
+          }
+        }
+      })
+
+      let taskWeb = new Task(shipit, { service: 'web' })
+      let taskAssets = new Task(shipit, { service: 'assets' })
+
+      assert.equal(taskWeb.options.name, 'web')
+      assert.equal(taskWeb.options.prefix, 'pre')
+      assert.equal(taskAssets.options.name, 'assets')
+      assert.equal(taskAssets.options.prefix, 'pre')
     })
   })
 
