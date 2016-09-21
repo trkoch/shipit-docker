@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "eslint": "eslint **/*.js"
+    "lint": "eslint **/*.js"
   },
   "author": "Tristan Koch",
   "license": "ISC",
