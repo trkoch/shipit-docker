@@ -1,4 +1,4 @@
-const {assert} = require('chai')
+const assert = require('assert')
 const sinon = require('sinon')
 const sinonStubPromise = require('sinon-stub-promise')
 
@@ -61,7 +61,7 @@ describe('Task', function() {
 
     it('includes task options', function() {
       let task = new Task(shipit, {net: true})
-      assert.isTrue(task.options.net)
+      assert.ok(task.options.net)
     })
 
     it('merges container default and environment options', function() {
