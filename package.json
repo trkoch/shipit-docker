@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "lint": "eslint **/*.js"
+    "lint": "standard"
   },
   "author": "Tristan Koch",
   "license": "ISC",
@@ -19,11 +19,15 @@
   },
   "devDependencies": {
     "eslint": "^3.5.0",
+    "eslint-config-standard": "^6.0.1",
     "eslint-plugin-mocha": "^4.5.1",
+    "eslint-plugin-promise": "^2.0.1",
+    "eslint-plugin-standard": "^2.0.0",
     "mocha": "^3.0.2",
     "proxyquire": "^1.7.10",
     "shipit-cli": "^1.4.1",
     "sinon": "^1.17.6",
-    "sinon-stub-promise": "^3.0.1"
+    "sinon-stub-promise": "^3.0.1",
+    "standard": "^8.1.0"
   }
 }

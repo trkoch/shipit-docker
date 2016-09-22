@@ -1,26 +1,28 @@
+/* eslint-env mocha */
+
 const assert = require('assert')
 const sinon = require('sinon')
 const sinonStubPromise = require('sinon-stub-promise')
 
 sinonStubPromise(sinon)
-sinon.assert.expose(assert, { prefix: "" })
+sinon.assert.expose(assert, { prefix: '' })
 
 const Shipit = require('shipit-cli')
 const Task = require('../../lib/task')
 
-describe('Task', function() {
-  before(function() {
+describe('Task', function () {
+  before(function () {
     sinon.stub(Promise, 'resolve', sinon.stub().returnsPromise().resolves())
   })
 
-  after(function() {
+  after(function () {
     Promise.resolve.restore()
   })
 
-  context('with global prefix, vendor and name', function() {
+  context('with global prefix, vendor and name', function () {
     let shipit
 
-    beforeEach(function() {
+    beforeEach(function () {
       shipit = new Shipit({environment: 'test'})
       shipit.initConfig({
         default: {
@@ -44,27 +46,27 @@ describe('Task', function() {
       })
     })
 
-    it('includes global options', function() {
+    it('includes global options', function () {
       let task = new Task(shipit)
       assert.equal(task.options.prefix, 'pre')
     })
 
-    it('includes environment options', function() {
+    it('includes environment options', function () {
       let task = new Task(shipit)
       assert.equal(task.options.detach, false)
     })
 
-    it('includes container options', function() {
+    it('includes container options', function () {
       let task = new Task(shipit, {service: 'web'})
       assert.equal(task.options.envs[0], ['WEB=TRUE'])
     })
 
-    it('includes task options', function() {
+    it('includes task options', function () {
       let task = new Task(shipit, {net: true})
       assert.ok(task.options.net)
     })
 
-    it('merges container default and environment options', function() {
+    it('merges container default and environment options', function () {
       let shipit = new Shipit({environment: 'test'})
       shipit.initConfig({
         default: {
@@ -97,13 +99,13 @@ describe('Task', function() {
       assert.equal(task.options.envs[0], 'API=http://api.example.com')
     })
 
-    it('derives required names', function() {
+    it('derives required names', function () {
       let task = new Task(shipit)
       assert.equal(task.options.image, 'pre/ven_name_web')
       assert.equal(task.options.container, 'ven_name_web')
     })
 
-    it('derives required names from options', function() {
+    it('derives required names from options', function () {
       let task = new Task(shipit, {
         prefix: 'pfix',
         vendor: 'vdor',
@@ -113,7 +115,7 @@ describe('Task', function() {
       assert.equal(task.options.container, 'vdor_some_web')
     })
 
-    it('uses required names from options', function() {
+    it('uses required names from options', function () {
       let task = new Task(shipit, {
         image: 'pfix/vdor_some_web',
         container: 'vdor_some_web'
@@ -123,18 +125,18 @@ describe('Task', function() {
     })
   })
 
-  context('without global options', function() {
-    it('requires prefix without image and container', function() {
+  context('without global options', function () {
+    it('requires prefix without image and container', function () {
       let shipit = new Shipit({environment: 'test'})
-      assert.throws(function() {
-        new Task(shipit, {}, /Missing prefix/)
+      assert.throws(function () {
+        new Task(shipit, {}, /Missing prefix/) // eslint-disable-line no-new
       })
     })
 
-    it('does not require prefix with image and container', function() {
+    it('does not require prefix with image and container', function () {
       let shipit = new Shipit({environment: 'test'})
-      assert.doesNotThrow(function() {
-        new Task(shipit, {
+      assert.doesNotThrow(function () {
+        new Task(shipit, {  // eslint-disable-line no-new
           image: 'pre/ven_name_web',
           container: 'ven_name_web'
         })
@@ -142,10 +144,10 @@ describe('Task', function() {
     })
   })
 
-  describe('merging options', function() {
+  describe('merging options', function () {
     let config
 
-    beforeEach(function() {
+    beforeEach(function () {
       config = {
         default: {
           docker: {
@@ -166,7 +168,7 @@ describe('Task', function() {
       }
     })
 
-    it('gives precedence to environment options', function() {
+    it('gives precedence to environment options', function () {
       let shipit = new Shipit({environment: 'test'})
       delete config.default.docker.containers // Container options take precedence
       shipit.initConfig(config)
@@ -179,7 +181,7 @@ describe('Task', function() {
       assert.equal(task.options.name, 'environment')
     })
 
-    it('gives precedence to container options', function() {
+    it('gives precedence to container options', function () {
       let shipit = new Shipit({environment: 'test'})
       shipit.initConfig(config)
 
@@ -192,7 +194,7 @@ describe('Task', function() {
       assert.equal(task.options.name, 'container')
     })
 
-    it('gives precedence to task options', function() {
+    it('gives precedence to task options', function () {
       let shipit = new Shipit({environment: 'test'})
       shipit.initConfig(config)
 
@@ -205,7 +207,7 @@ describe('Task', function() {
       assert.equal(task.options.name, 'task')
     })
 
-    it('includes options of given service', function() {
+    it('includes options of given service', function () {
       let shipit = new Shipit({environment: 'test'})
       shipit.initConfig({
         test: {
@@ -236,11 +238,11 @@ describe('Task', function() {
     })
   })
 
-  describe('run()', function() {
+  describe('run()', function () {
     let Container, container
     let options, shipit
 
-    beforeEach(function() {
+    beforeEach(function () {
       Container = sinon.spy(() => container)
 
       container = {
@@ -258,14 +260,14 @@ describe('Task', function() {
       shipit = {}
     })
 
-    it('initializes container with options', function() {
+    it('initializes container with options', function () {
       let task = new Task(shipit, options)
       task.run(Container)
 
       sinon.assert.calledWith(Container, shipit, options)
     })
 
-    it('builds and starts container', function() {
+    it('builds and starts container', function () {
       let task = new Task(shipit, options)
       task.run(Container)
       container.build.resolves()

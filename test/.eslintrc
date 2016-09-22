@@ -1,0 +1,10 @@
+{
+  "extends": "standard",
+  "plugins": [
+    "mocha"
+  ],
+  "rules": {
+    "mocha/no-exclusive-tests": "warn",
+    "mocha/no-identical-title": "error"
+  }
+}
