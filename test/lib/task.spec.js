@@ -101,7 +101,7 @@ describe('Task', function () {
 
     it('derives required names', function () {
       let task = new Task(shipit)
-      assert.equal(task.options.image, 'pre/ven_name_web')
+      assert.equal(task.options.image, 'pre/ven_name')
       assert.equal(task.options.container, 'ven_name_web')
     })
 
@@ -111,7 +111,7 @@ describe('Task', function () {
         vendor: 'vdor',
         name: 'some'
       })
-      assert.equal(task.options.image, 'pfix/vdor_some_web')
+      assert.equal(task.options.image, 'pfix/vdor_some')
       assert.equal(task.options.container, 'vdor_some_web')
     })
 
@@ -214,14 +214,15 @@ describe('Task', function () {
           docker: {
             prefix: 'pre',
             vendor: 'ven',
+            name: 'name',
             containers: [
               {
-                service: 'web',
-                name: 'web'
+                service: 'web'
               },
               {
                 service: 'assets',
-                name: 'assets'
+                image: 'pre/ven_name_assets',
+                file: 'Dockerfile.assets'
               }
             ]
           }
@@ -231,10 +232,12 @@ describe('Task', function () {
       let taskWeb = new Task(shipit, { service: 'web' })
       let taskAssets = new Task(shipit, { service: 'assets' })
 
-      assert.equal(taskWeb.options.name, 'web')
       assert.equal(taskWeb.options.prefix, 'pre')
-      assert.equal(taskAssets.options.name, 'assets')
+      assert.equal(taskWeb.options.name, 'name')
       assert.equal(taskAssets.options.prefix, 'pre')
+      assert.equal(taskAssets.options.name, 'name')
+      assert.equal(taskAssets.options.image, 'pre/ven_name_assets')
+      assert.equal(taskAssets.options.file, 'Dockerfile.assets')
     })
   })
 
