@@ -257,7 +257,8 @@ describe('Task', function () {
         image: 'image',
         container: 'container',
         net: true,
-        path: 'path/to/project/'
+        path: 'path/to/project/',
+        workspace: 'path/to/workspace/'
       }
 
       shipit = {}
